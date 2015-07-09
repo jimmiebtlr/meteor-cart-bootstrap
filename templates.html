@@ -1,0 +1,24 @@
+<template name="addToCart">
+  <button class="btn btn-primary">
+    <i class="fa fa-shopping-cart"></i>&nbsp;
+    Add to Cart
+  </button>
+</template>
+
+<template name="cartItemsIcon">
+  <a>
+    <i class="fa fa-shopping-cart"></i>&nbsp;{{cartItems}}
+  </a>
+</template>
+
+<template name="cartCheckout">
+  <!-- Dynamically choose between cart review -->
+  <!-- sign in, shipping and payment, gift options, place order -->
+  {{> cartReview}}
+</template>
+
+<template name="cartReview">
+  {{#each cartItem}}
+    {{relationType}}<br>
+  {{/each}}
+</template>
