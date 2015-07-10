@@ -1,13 +1,4 @@
 Template.demo.helpers({
-  cartItems: function(){
-    return Cart.items();
-  },
-  cartTotal: function(){
-    return Cart.amount();
-  },
-  cartNumItems: function(){
-    return Cart.numItems();
-  },
   items: function(){
     return Items.find();
   }

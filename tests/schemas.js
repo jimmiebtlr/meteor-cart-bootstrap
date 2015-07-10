@@ -22,6 +22,15 @@ Items.allow({
   }
 });
 
+Items.helpers({
+  label: function(){
+    return this.name;
+  },
+  thumbUrl: function(){
+    return "/widget.png";
+  }
+});
+
 if( Meteor.isClient ){
   Meteor.subscribe("Items");
 }

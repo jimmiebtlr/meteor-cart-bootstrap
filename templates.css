@@ -1,0 +1,20 @@
+.cart-review .cart-total{
+  border-top-style: solid;
+  border-top-color: #f5f5f5;
+  border-top-width: 5px;
+  padding: 15px;
+}
+
+.cart-review .cart-line-item{
+  padding: 15px;
+}
+
+.cart-review .cart-line-item:nth-child(odd){
+  background: #F5F5F5;
+}
+
+.cart-review .thumbnail{
+  max-width: 100%;
+  max-height: 100%;
+  margin-bottom: 0px;
+}

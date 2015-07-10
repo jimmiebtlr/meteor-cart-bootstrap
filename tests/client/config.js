@@ -1,0 +1,3 @@
+CartUI.configure({
+  checkoutUrl: "/checkout"
+});

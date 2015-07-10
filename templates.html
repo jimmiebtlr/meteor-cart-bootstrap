@@ -6,19 +6,64 @@
 </template>
 
 <template name="cartItemsIcon">
-  <a>
-    <i class="fa fa-shopping-cart"></i>&nbsp;{{cartItems}}
+  <a href="{{cartCheckoutUrl}}">
+    <i class="fa fa-shopping-cart"></i>&nbsp;{{cartNumItems}}
   </a>
 </template>
 
 <template name="cartCheckout">
-  <!-- Dynamically choose between cart review -->
-  <!-- sign in, shipping and payment, gift options, place order -->
-  {{> cartReview}}
+  <div class="cart-checkout">
+    <!-- Dynamically choose between cart review -->
+    <!-- sign in, shipping and payment, gift options, place order -->
+    {{> cartReview}}
+
+    <!-- select credit card -->
+
+    <!-- show recipt / download links -->
+  </div>
 </template>
 
 <template name="cartReview">
-  {{#each cartItem}}
-    {{relationType}}<br>
-  {{/each}}
+  <div class="cart-review">
+    <div class="row">
+      <div class="col-xs-offset-8 col-xs-2"> 
+        <h3>Price</h3>
+      </div>
+      <div class="col-xs-2"> 
+        <h3>Quantity</h3>
+      </div>
+    </div>
+    <div class="cart-items">
+      {{#each cartItems}}
+        {{> cartReviewLineItem}}
+      {{/each}}
+    </div>
+    <div class="row cart-total">
+      <div class="col-sm-offset-8 col-sm-4 col-xs-12"> 
+        <strong>Subtotal( {{cartNumItems}} items ):</strong> {{formatMoney cartTotalAmount}}
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary btn-lg pull-right col-sm-offset-8 col-sm-4 col-xs-12">
+        <i class="fa fa-shopping-cart"></i>&nbsp;Checkout
+      </button>
+    </div>
+  </div>
+</template>
+
+<template name="cartReviewLineItem">
+  <div class="row cart-line-item">
+    <div class="col-xs-2">
+      <img class="thumbnail" src="{{doc.thumbUrl}}"/>
+    </div>
+    <div class="col-xs-6">
+      <h4>{{doc.label}}</h4>
+    </div>
+    <div class="col-xs-2">
+      {{formatMoney doc.amount}}
+    </div>
+    <div class="col-xs-2">
+      {{quantity}}
+    </div>
+  </div>
 </template>

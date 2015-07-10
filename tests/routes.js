@@ -8,3 +8,9 @@ Router.route('/', {
   name: 'home', 
   template: 'demo'
 });
+
+
+Router.route('/checkout', {
+  name: 'checkout', 
+  template: 'cartCheckout'
+});
