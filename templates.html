@@ -13,9 +13,16 @@
 
 <template name="cartCheckout">
   <div class="cart-checkout">
+    <div class="wrap-breadcrumb">
+      <div class="btn-group btn-breadcrumb">
+        <a href="#" class="btn btn-lg {{#if breadcrumbActive 'cartReview'}} btn-primary checkout-review{{else}} btn-default disabled{{/if}}">Review</a>
+        <a href="#" class="btn btn-default btn-lg {{#if breadcrumbActive 'paymentSource'}} btn-primary checkout-source{{else}} disabled btn-default{{/if}}">Pay</a>
+        <a href="#" class="btn btn-default btn-lg {{#if breadcrumbActive 'cartConfirmation'}} btn-primary checkout-confirm{{else}} disabled btn-default{{/if}}">Confirm</a> 
+      </div>
+    </div>
     <!-- Dynamically choose between cart review -->
     <!-- sign in, shipping and payment, gift options, place order -->
-    {{> cartReview}}
+    {{> UI.dynamic template=template data=data}}
 
     <!-- select credit card -->
 
@@ -24,29 +31,37 @@
 </template>
 
 <template name="cartReview">
-  <div class="cart-review">
-    <div class="row">
-      <div class="col-xs-offset-8 col-xs-2"> 
-        <h3>Price</h3>
-      </div>
-      <div class="col-xs-2"> 
-        <h3>Quantity</h3>
+  <div class="cart-review row">
+    <div class="col-md-9 col-xs-12">
+      <div class="cart-review-primary well">
+        {{#if cartHasItems}}
+          <div class="row cart-review-header">
+            <div class="col-xs-offset-8 col-xs-2"> 
+              Price
+            </div>
+            <div class="col-xs-2"> 
+              Quantity
+            </div>
+          </div>
+          <div class="cart-items">
+            {{#each cartItems}}
+              {{> cartReviewLineItem}}
+            {{/each}}
+          </div>
+          <div class="row cart-total">
+            <div class="col-sm-offset-8 col-sm-4 col-xs-12"> 
+              <strong>Subtotal( {{cartNumItems}} items ):</strong> {{formatMoney cartTotalAmount}}
+            </div>
+          </div>
+        {{else}}
+          <strong>Your cart is empty</strong>
+        {{/if}}
       </div>
     </div>
-    <div class="cart-items">
-      {{#each cartItems}}
-        {{> cartReviewLineItem}}
-      {{/each}}
-    </div>
-    <div class="row cart-total">
-      <div class="col-sm-offset-8 col-sm-4 col-xs-12"> 
-        <strong>Subtotal( {{cartNumItems}} items ):</strong> {{formatMoney cartTotalAmount}}
+    <div class="col-md-3 col-sm-12">
+      <div class="well checkout-well">
+        <a class="btn btn-primary checkout {{#unless cartHasItems}}disabled{{/unless}}" name="checkout" href="#"><span class="checkout-btn-text">Checkout</span></a>
       </div>
-    </div>
-    <div class="row">
-      <button class="btn btn-primary btn-lg pull-right col-sm-offset-8 col-sm-4 col-xs-12">
-        <i class="fa fa-shopping-cart"></i>&nbsp;Checkout
-      </button>
     </div>
   </div>
 </template>
@@ -58,12 +73,61 @@
     </div>
     <div class="col-xs-6">
       <h4>{{doc.label}}</h4>
+      <a href="#" name="remove">
+        Remove
+      </a>
     </div>
     <div class="col-xs-2">
       {{formatMoney doc.amount}}
     </div>
     <div class="col-xs-2">
       {{quantity}}
+    </div>
+  </div>
+</template>
+
+
+<template name="cartConfirmation">
+  <div class="cart-review row">
+    <div class="col-md-9 col-xs-12">
+      <div class="cart-review-primary well">
+        <div class="row cart-review-header">
+          <div class="col-xs-offset-8 col-xs-2"> 
+            Price
+          </div>
+          <div class="col-xs-2"> 
+            Quantity
+          </div>
+        </div>
+        <div class="cart-items">
+          {{#each cartItems}}
+            <div class="row cart-line-item">
+              <div class="col-xs-2">
+                <img class="thumbnail" src="{{doc.thumbUrl}}"/>
+              </div>
+              <div class="col-xs-6">
+                <h4>{{doc.label}}</h4>
+              </div>
+              <div class="col-xs-2">
+                {{formatMoney doc.amount}}
+              </div>
+              <div class="col-xs-2">
+                {{quantity}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+        <div class="row cart-total">
+          <div class="col-sm-offset-8 col-sm-4 col-xs-12"> 
+            <strong>Subtotal( {{cartNumItems}} items ):</strong> {{formatMoney cartTotalAmount}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-12">
+      <div class="well checkout-well">
+        <a class="btn btn-primary complete-checkout" name="complete-checkout" href="#"><span class="checkout-btn-text">Complete Checkout</span></a>
+      </div>
     </div>
   </div>
 </template>

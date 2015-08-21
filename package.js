@@ -12,14 +12,16 @@ Package.on_use(function (api) {
     "elevatedevdesign:cart@0.0.1-rc.2",
     'lepozepo:accounting@1.0.0',
     'templating',
-    'ui'
+    'ui',
+    'reactive-var'
   ]);
 	
 	api.add_files([
     'templates.html',
     'templates.js',
-    'templates.css'
+    'templates.css',
+    'breadcrumb.css'
   ],['client']);
 
-  api.export('CartUI');
+  api.export('CartUI','client');
 });
