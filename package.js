@@ -13,7 +13,8 @@ Package.on_use(function (api) {
     'lepozepo:accounting@1.0.0',
     'templating',
     'ui',
-    'reactive-var'
+    'reactive-var',
+    'deps@1.0.7'
   ]);
 	
 	api.add_files([

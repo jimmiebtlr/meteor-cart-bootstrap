@@ -1,5 +1,5 @@
 <template name="addToCart">
-  <button class="btn btn-primary">
+  <button class="btn btn-primary add-to-cart">
     <i class="fa fa-shopping-cart"></i>&nbsp;
     Add to Cart
   </button>
@@ -16,7 +16,7 @@
     <div class="wrap-breadcrumb">
       <div class="btn-group btn-breadcrumb">
         <a href="#" class="btn btn-lg {{#if breadcrumbActive 'cartReview'}} btn-primary checkout-review{{else}} btn-default disabled{{/if}}">Review</a>
-        <a href="#" class="btn btn-default btn-lg {{#if breadcrumbActive 'paymentSource'}} btn-primary checkout-source{{else}} disabled btn-default{{/if}}">Pay</a>
+        <a href="#" class="btn btn-default btn-lg {{#if breadcrumbActive 'cartPayment'}} btn-primary checkout-source{{else}} disabled btn-default{{/if}}">Payment</a>
         <a href="#" class="btn btn-default btn-lg {{#if breadcrumbActive 'cartConfirmation'}} btn-primary checkout-confirm{{else}} disabled btn-default{{/if}}">Confirm</a> 
       </div>
     </div>
@@ -27,6 +27,19 @@
     <!-- select credit card -->
 
     <!-- show recipt / download links -->
+  </div>
+</template>
+
+<template name="cartPayment">
+  <div class="cart-review row">
+    <div class="col-md-9 col-xs-12">
+      {{> UI.dynamic template=template data=data}}
+    </div>
+    <div class="col-md-3 col-sm-12">
+      <div class="well checkout-well">
+        <a class="btn btn-primary checkout {{#unless cartHasItems}}disabled{{/unless}}" name="continue" href="#"><span class="cart-payment-btn-text">Continue</span></a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -126,7 +139,7 @@
     </div>
     <div class="col-md-3 col-sm-12">
       <div class="well checkout-well">
-        <a class="btn btn-primary complete-checkout" name="complete-checkout" href="#"><span class="checkout-btn-text">Complete Checkout</span></a>
+        <a class="btn btn-primary complete-checkout {{disabled}}" name="complete-checkout" href="#"><span class="checkout-btn-text">Complete Checkout</span></a>
       </div>
     </div>
   </div>

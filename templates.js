@@ -1,25 +1,22 @@
 var checkoutTemplate = new ReactiveVar();
 var options = new ReactiveVar();
 
+var paymentErrors = new ReactiveVar();
+var checkPaymentErrors = new Deps.Dependency();
+
 Template.cartCheckout.created = function(){
   checkoutTemplate.set( "cartReview" );
   options.set({});
+  paymentErrors.set();
 };
+
+Template.cartCheckout.onDestroyed(function(){
+  options.set();
+});
 
 Template.cartCheckout.helpers({
   template: function(){
     return checkoutTemplate.get();
-  },
-  data: function(){
-    if( checkoutTemplate.get() === CartUI._settings.paymentSourceTemplate ){
-      return { 
-        callback: function(opts){
-          var o = options.get();
-          options.set( _.extend(o,opts) );
-          checkoutTemplate.set("cartConfirmation");
-        }
-      };
-    }
   },
   breadcrumbActive: function( route ){
     if( route === "cartReview" ){
@@ -28,8 +25,8 @@ Template.cartCheckout.helpers({
 
     // if currently asking for payment source
     // and this is the breadcrumb for that template
-    if( route === "paymentSource" && 
-      checkoutTemplate.get() == CartUI._settings.paymentSourceTemplate
+    if( route === "cartPayment" && 
+      checkoutTemplate.get() === "cartPayment"
     ){
       return true;
     }
@@ -43,14 +40,36 @@ Template.cartCheckout.helpers({
 
 Template.cartCheckout.events({
   'click .checkout-review': function(){
-    console.log( "clicked" );
     checkoutTemplate.set("cartReview");
   },
   'click .checkout-source': function(){
-    checkoutTemplate.set( CartUI._settings.paymentSourceTemplate );
+    checkoutTemplate.set( "cartPayment" );
   },
   'click .checkout-confirm': function(){
     checkoutTemplate.set( "cartConfirmation" );
+  }
+});
+
+Template.cartPayment.helpers({
+  data: function(){
+    var template = Template.instance();
+    var data = { 
+      register: function( errFunc ){
+        template.checkForErrors = errFunc;
+      }
+    };
+    return data;
+  },
+  template: function(){
+    return CartUI._settings.paymentSourceTemplate;
+  },
+});
+
+Template.cartPayment.events({
+  'click *[name="continue"]': function(e, template){
+    if( !template.checkForErrors() ){
+      checkoutTemplate.set( 'cartConfirmation' ); 
+    }
   }
 });
 
@@ -64,13 +83,9 @@ Template.addToCart.events({
   }
 });
 
-Template.cartReview.created = function(){
-
-};
-
 Template.cartReview.events({
   'click *[name="checkout"]': function(){
-    checkoutTemplate.set( CartUI._settings.paymentSourceTemplate ); 
+    checkoutTemplate.set( 'cartPayment' ); 
   }
 });
 
@@ -80,12 +95,25 @@ Template.cartReviewLineItem.events({
   }
 });
 
+
+Template.cartConfirmation.onCreated(function(){
+  this.checkoutDisabled = new ReactiveVar(false);
+});
+
 Template.cartConfirmation.events({
   'click *[name="complete-checkout"]': function(){
-    console.log( "checkoull" );
+    var template = new Template.instance();
+    template.checkoutDisabled.set( true );
     var opts = options.get();
     opts = _.extend( opts, {expectedTotal: Cart.amount(), id: Cart.collection.findOne()._id});
     CartUI._settings.onCheckout( opts );
+  }
+});
+
+Template.cartConfirmation.helpers({
+  disabled: function(){
+    var template = new Template.instance();
+    return template.checkoutDisabled.get() ? "disabled" : "";
   }
 });
 
@@ -106,6 +134,13 @@ UI.registerHelper('cartNumItems',function(){
 
 UI.registerHelper('cartItems',function(){
   return Cart.items();
+});
+
+UI.registerHelper('cartHasItem',function(type, id){
+  return Cart.inCart({
+    relationId: id,
+    relationType: type,
+  });
 });
 
 UI.registerHelper('cartHasItems',function(){
